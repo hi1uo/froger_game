@@ -13,22 +13,12 @@ var Engine = (function(global) {
       //get constant time
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
-
         update(dt);
         render();
-
         lastTime = now;
-
-        /* Use the browser's requestAnimationFrame function to call this
-         * function again as soon as the browser is able to draw another frame.
-         */
         win.requestAnimationFrame(main);
     }
 
-    /* This function does some initial setup that should only occur once,
-     * particularly setting the lastTime variable that is required for the
-     * game loop.
-     */
     function init() {
         reset();
         lastTime = Date.now();
@@ -37,21 +27,43 @@ var Engine = (function(global) {
 
     function update(dt) {
         updateEntities(dt);
+        setTimeout(updateGem(), 300000);
         checkCollisions();
+        // player.update();
+        if (player.y == -10) {
+          player.score += 20;
+          player.reset();
+          gem.reset();
+        }
     }
 
     function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+    }
+
+    function updateGem(){
+      if(gem.gemNum > 0){
+        if (player.x == gem.x && player.y >= gem.y && player.y <=gem.y+83){
+          player.score += 50;
+          gem.update();
+        }
+      }
+      else {
+        gem.x =-100;
+        gem.y =-200;
+      }
     }
 
     function checkCollisions(){
       allEnemies.forEach(function(enemy){
         if(enemy.y == player.y){
           if(player.x <= (enemy.x+60) && player.x>= (enemy.x -40)){
+            life.loseLife();
+            player.score -= 70;
             player.reset();
+            gem.reset();
           }
         }
       });
@@ -87,29 +99,30 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-
+        Score();
         player.render();
+        life.render();
+        gem.render();
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
-     */
+
     function reset() {
       // alert("Hello");
         // noop
     }
 
-    /* Go ahead and load all of the images we know we're going to need to
-     * draw our game level. Then set init as the callback method, so that when
-     * all of these images are properly loaded our game will start.
-     */
     Resources.load([
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/Gem-Blue.png',
+        'images/Gem-Green.png',
+        'images/Gem-Orange.png',
+        'images/Heart.png',
+        'images/Heart-small.png'
+
     ]);
     Resources.onReady(init);
 

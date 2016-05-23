@@ -4,7 +4,7 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.startX = -101;
     this.endX = 505;
-    this.lanes = [73, 156, 239]; //three lanes
+    this.lanes = [73, 156, 239]; //three lanes，83each space
     this.reset();
 };
 
@@ -38,6 +38,8 @@ var Player = function() {
     this.xRange = [0, 404];
     this.yRange = [-10, 405];
     this.sprite = 'images/char-boy.png';
+    this.score = 0;
+    this.dead = false;
     this.reset();
 };
 
@@ -71,12 +73,77 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
+var Gem = function(){
+  this.reset();
+};
+
+Gem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+//each round only 5 gems in total
+Gem.prototype.update = function() {
+  this.random();
+  this.gemNum--;
+};
+Gem.prototype.random = function() {
+  var gems = ['images/Gem-Blue.png','images/Gem-Green.png','images/Gem-Orange.png',''];
+  this.sprite = gems[Math.floor(Math.random()*3)];
+  this.x = 101 * Math.floor(Math.random()*5);
+  this.y = 63 + 83* Math.floor(Math.random()*3);
+};
+Gem.prototype.reset = function() {
+  this.random();
+  this.gemNum = 5;
+};
+
+
+var Life = function() {
+  this.remainLife = 3;
+  this.sprite = 'images/Heart-small.png';
+};
+
+Life.prototype.render = function(){
+  if (life.remainLife === 0){
+    gameOver();
+    // alert('you dead');
+  }
+  for(var i=0;i<this.remainLife;i++){
+    ctx.drawImage(Resources.get(this.sprite),i*30,530);
+  }
+};
+
+Life.prototype.loseLife = function(){
+  if(this.remainLife > 0){
+    this.remainLife--;
+  }
+};
+
+
+function gameOver() {
+  // ctx.drawImage(canvas,0,0);
+  gem.gemNum = 0;
+  ctx.fillStyle = 'black';
+  // ctx.clearRect(73,200, 350, 200);
+  ctx.fillRect(73,200, 350, 200);
+  ctx.fillStyle = 'white';
+  ctx.font = "50px Roboto Condensed";
+  ctx.fillText("Game Over!", 120, 315);
+}
+
+function Score() {
+  ctx.font = "30px Roboto Condensed";
+  ctx.fillStyle = "#0000";
+  ctx.fillText("Score: "+player.score,1,100);
+}
+
 // Now instantiate your objects. allEnemies and player
 var e1 = new Enemy();
 var e2 = new Enemy();
 var e3 = new Enemy();
 var allEnemies = [e1,e2,e3];
 var player = new Player();
+var gem = new Gem();
+var life = new Life();
 
 
 // This listens for key presses and sends the keys to your
