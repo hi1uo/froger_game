@@ -16,7 +16,16 @@ var Engine = (function(global) {
         update(dt);
         render();
         lastTime = now;
-        win.requestAnimationFrame(main);
+        //game over, pause the page
+        if (life.remainLife === 0){
+          gameOver();
+          setTimeout(function(){
+            win.requestAnimationFrame(main);
+          },50000);
+        }
+        else {
+          win.requestAnimationFrame(main);
+        }
     }
 
     function init() {
@@ -27,13 +36,17 @@ var Engine = (function(global) {
 
     function update(dt) {
         updateEntities(dt);
-        setTimeout(updateGem(), 300000);
+        updateGem();
         checkCollisions();
-        // player.update();
-        if (player.y == -10) {
-          player.score += 20;
-          player.reset();
-          gem.reset();
+        if (player.score >= 200){
+          e1.speed += 5;
+        }
+
+        if (player.score >= 400) {
+          e2.speed += 10;
+        }
+        if (player.score >= 600) {
+          e3.speed += 20;
         }
     }
 
@@ -41,12 +54,17 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+        if (player.y == -10) {
+          player.score += 20;
+          player.reset();
+          gem.reset();
+        }
     }
 
     function updateGem(){
       if(gem.gemNum > 0){
         if (player.x == gem.x && player.y >= gem.y && player.y <=gem.y+83){
-          player.score += 50;
+          player.score += 70;
           gem.update();
         }
       }
@@ -61,7 +79,7 @@ var Engine = (function(global) {
         if(enemy.y == player.y){
           if(player.x <= (enemy.x+60) && player.x>= (enemy.x -40)){
             life.loseLife();
-            player.score -= 70;
+            player.score -= 50;
             player.reset();
             gem.reset();
           }

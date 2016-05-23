@@ -103,10 +103,9 @@ var Life = function() {
 };
 
 Life.prototype.render = function(){
-  if (life.remainLife === 0){
-    gameOver();
-    // alert('you dead');
-  }
+  // if (this.remainLife === 0){
+  //   gameOver();
+  // }
   for(var i=0;i<this.remainLife;i++){
     ctx.drawImage(Resources.get(this.sprite),i*30,530);
   }
@@ -120,14 +119,14 @@ Life.prototype.loseLife = function(){
 
 
 function gameOver() {
-  // ctx.drawImage(canvas,0,0);
-  gem.gemNum = 0;
   ctx.fillStyle = 'black';
   // ctx.clearRect(73,200, 350, 200);
   ctx.fillRect(73,200, 350, 200);
   ctx.fillStyle = 'white';
   ctx.font = "50px Roboto Condensed";
   ctx.fillText("Game Over!", 120, 315);
+  ctx.font = "25px Roboto Condensed";
+  ctx.fillText("Your Score: " +player.score, 120, 350);
 }
 
 function Score() {
@@ -136,7 +135,6 @@ function Score() {
   ctx.fillText("Score: "+player.score,1,100);
 }
 
-// Now instantiate your objects. allEnemies and player
 var e1 = new Enemy();
 var e2 = new Enemy();
 var e3 = new Enemy();
@@ -144,7 +142,6 @@ var allEnemies = [e1,e2,e3];
 var player = new Player();
 var gem = new Gem();
 var life = new Life();
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
