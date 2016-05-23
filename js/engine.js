@@ -38,14 +38,14 @@ var Engine = (function(global) {
         updateEntities(dt);
         updateGem();
         checkCollisions();
-        if (player.score >= 200){
+        if (player.score >= 400){
           e1.speed += 5;
         }
 
-        if (player.score >= 400) {
+        if (player.score >= 800) {
           e2.speed += 10;
         }
-        if (player.score >= 600) {
+        if (player.score >= 1600) {
           e3.speed += 20;
         }
     }
